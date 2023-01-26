@@ -1,0 +1,147 @@
+---
+title: "Homework 1"
+author: "Ethan T. Richardson"
+date: "2023-01-19"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(mdsr)
+```
+
+This $#!? is automated
+
+
+### Question 1
+
+It is done, I'm not sure I can show it in a code section here but I'll show you a mathematical P
+
+$P$
+
+Pretty cool, right?
+
+The above is before you explained how to prove it, but I laughed enough to keep it
+
+Here's the URL: https://github.com/erichardson2/DSCI101.git
+
+### Question 2
+
+```{r}
+cubs <- read.csv("https://raw.githubusercontent.com/gjm112/DSCI101/main/data/cubs_all_time.csv")
+```
+
+#### Part A
+
+```{r}
+#Sum of the amount of games the Cubs lost
+won <- sum(cubs$W)
+
+#Sum of the amount of games the Cubs lost
+lost <- sum(cubs$L)
+```
+
+The Cubs won a total of `r won` games and lost a total of `r lost` games between 1876 and 2022.
+
+#### Part B
+
+```{r}
+#Season with most runs
+mostYear <- cubs$Year[which(cubs$R == max(cubs$R))]
+
+#Season with least runs
+leastYear <- cubs$Year[which(cubs$R == min(cubs$R))]
+```
+
+The Cubs scored the most runs in `r mostYear` and the least runs in `r leastYear`. 
+
+2020 was a very depressing season.
+
+#### Part C
+
+```{r}
+#filter dataframe by years that attendance over 3mill
+attHigh <- filter(cubs, Attendance > 3000000)
+
+amount <- length(attHigh$Attendance)
+```
+The Cubs had `r amount` seasons that were above 3 million in total attendance
+
+
+#### Part D
+
+```{r}
+cubsRatio <- mutate(cubs, ratio = R/RA)
+
+maxRatio <- max(cubsRatio$ratio)
+```
+
+The greatest ratio of runs for to runs against between 1982 and 2000 was about `r maxRatio`:1
+
+## Question 3
+
+```{r}
+college <- read.csv("https://raw.githubusercontent.com/gjm112/DSCI101/main/data/top_colleges_2022.csv")
+```
+
+#### Part A
+
+```{r}
+collegeIll <- filter(college, state == 'IL')
+
+amountIll <- length(collegeIll$state)
+```
+
+There are `r amountIll` colleges from this data set that are in Illinois
+
+#### Part B
+
+```{r}
+underPopLoy <- college$undergradPop[which(college$organizationName == 'Loyola University Chicago')]
+
+higher <- college %>%
+  filter(undergradPop > underPopLoy) %>%
+  summarize(length(undergradPop))
+```
+
+There are `r higher` colleges with a larger undergraduate student population than Loyola University Chicago
+
+
+#### Part C
+
+```{r}
+#Latitude is North and South
+North <- college %>%
+  summarize(organizationName,latitude, NA.rm = TRUE) %>%
+  arrange(desc(latitude))
+
+South <- college %>%
+  summarize(organizationName,latitude, NA.rm = TRUE) %>%
+  arrange(latitude)
+
+```
+The college furthest North is `r North[1,1]`. While Alaska is the state furthest to the north, they are not represented in this data set. As such, Washington has the majority of the most northern colleges
+
+The college furthest South is `r South[1,1]`. Hawaii is the only official US state below the Tropic of Cancer
+
+
+```{r}
+#Longitude is East and West
+East <- college %>%
+  summarize(organizationName,longitude, NA.rm = TRUE) %>%
+  arrange(desc(longitude))
+
+West <- college %>%
+  summarize(organizationName,longitude, NA.rm = TRUE) %>%
+  arrange(longitude)
+```
+
+While the most Eastern University according strictly to the original data set says it's `r East[1,1]` due to a typo, it is actually `r East[2,1]`.
+
+The most Western college is `r West[1,1]`, which makes the college also the most South-Western college in the data set, what a fun fact.

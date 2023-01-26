@@ -9,10 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Gregory J. Matthews" />
+<meta name="author" content="Ethan T. Richardson" />
 
+<meta name="date" content="2023-01-19" />
 
-<title>Data Wrangling on one table</title>
+<title>Homework 1</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,25 +350,13 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Data Wrangling on one table</h1>
-<h4 class="author">Gregory J. Matthews</h4>
-<h4 class="date">8/31/2022</h4>
+<h1 class="title toc-ignore">Homework 1</h1>
+<h4 class="author">Ethan T. Richardson</h4>
+<h4 class="date">2023-01-19</h4>
 
 </div>
 
 
-<div id="tidyverse-grammar" class="section level1">
-<h1>Tidyverse grammar</h1>
-<ul>
-<li>select(): Returns a sub set of columns (i.e. features or
-variables)</li>
-<li>filter(): Returns a subset of rows (i.e. observations)</li>
-<li>mutate(): add or modify existing columns</li>
-<li>arrange(): sort the rows</li>
-<li>summarize(): aggregate the data across rows (e.g., group it
-according to some criteria)</li>
-</ul>
-<p>#Filter and Select</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
 ## ✔ ggplot2 3.4.0      ✔ purrr   1.0.1 
@@ -377,1101 +366,110 @@ according to some criteria)</li>
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(mdsr)
-#Subset of rows
-filter(CIACountries, pop &gt; 1000000000)</code></pre>
-<pre><code>##   country        pop    area oil_prod   gdp educ  roadways net_users
-## 1   China 1367485388 9596960  4189000 14100   NA 0.4278841      &gt;35%
-## 2   India 1251695584 3287263   767600  6200  3.2 1.4266708      &gt;15%</code></pre>
-<pre class="r"><code>#I can also do it like this
-CIACountries %&gt;% filter(pop &gt; 1e9)</code></pre>
-<pre><code>##   country        pop    area oil_prod   gdp educ  roadways net_users
-## 1   China 1367485388 9596960  4189000 14100   NA 0.4278841      &gt;35%
-## 2   India 1251695584 3287263   767600  6200  3.2 1.4266708      &gt;15%</code></pre>
-<pre class="r"><code>#In base R
-CIACountries[CIACountries$pop &gt; 1e9,]</code></pre>
-<pre><code>##    country        pop    area oil_prod   gdp educ  roadways net_users
-## 43   China 1367485388 9596960  4189000 14100   NA 0.4278841      &gt;35%
-## 97   India 1251695584 3287263   767600  6200  3.2 1.4266708      &gt;15%</code></pre>
-<pre class="r"><code>#or
-subset(CIACountries, pop &gt; 1e9)</code></pre>
-<pre><code>##    country        pop    area oil_prod   gdp educ  roadways net_users
-## 43   China 1367485388 9596960  4189000 14100   NA 0.4278841      &gt;35%
-## 97   India 1251695584 3287263   767600  6200  3.2 1.4266708      &gt;15%</code></pre>
-<pre class="r"><code>#Subset of columns
-select(CIACountries, country, pop, gdp)</code></pre>
-<pre><code>##                                           country        pop    gdp
-## 1                                     Afghanistan   32564342   1900
-## 2                                         Albania    3029278  11900
-## 3                                         Algeria   39542166  14500
-## 4                                  American Samoa      54343  13000
-## 5                                         Andorra      85580  37200
-## 6                                          Angola   19625353   7300
-## 7                                        Anguilla      16418  12200
-## 8                             Antigua and Barbuda      92436  23600
-## 9                                       Argentina   43431886  22600
-## 10                                        Armenia    3056382   8500
-## 11                                          Aruba     112162  25300
-## 12                                      Australia   22751014  65400
-## 13                                        Austria    8665550  47300
-## 14                                     Azerbaijan    9780780  18000
-## 15                                   Bahamas, The     324597  25200
-## 16                                        Bahrain    1346613  50100
-## 17                                     Bangladesh  168957745   3600
-## 18                                       Barbados     290604  16600
-## 19                                        Belarus    9589689  17700
-## 20                                        Belgium   11323973  43600
-## 21                                         Belize     347369   8400
-## 22                                          Benin   10448647   2100
-## 23                                        Bermuda      70196  85700
-## 24                                         Bhutan     741919   8200
-## 25                                        Bolivia   10800882   6500
-## 26                         Bosnia and Herzegovina    3867055  10500
-## 27                                       Botswana    2182719  16400
-## 28                                         Brazil  204259812  15600
-## 29                         British Virgin Islands      33454  42300
-## 30                                         Brunei     429646  79700
-## 31                                       Bulgaria    7186893  19100
-## 32                                   Burkina Faso   18931686   1700
-## 33                                          Burma   56320206   5500
-## 34                                        Burundi   10742276    800
-## 35                                     Cabo Verde     545993   6500
-## 36                                       Cambodia   15708756   3500
-## 37                                       Cameroon   23739218   3100
-## 38                                         Canada   35099836  45600
-## 39                                 Cayman Islands      56092  43800
-## 40                       Central African Republic    5391539    600
-## 41                                           Chad   11631456   2600
-## 42                                          Chile   17508260  23500
-## 43                                          China 1367485388  14100
-## 44                               Christmas Island       1530     NA
-## 45                        Cocos (Keeling) Islands        596     NA
-## 46                                       Colombia   46736728  13800
-## 47                                        Comoros     780971   1500
-## 48              Congo, Democratic Republic of the   79375136    800
-## 49                         Congo, Republic of the    4755097   6700
-## 50                                   Cook Islands       9838  12300
-## 51                                     Costa Rica    4814144  15500
-## 52                                  Cote d&#39;Ivoire   23295302   3300
-## 53                                        Croatia    4464844  21600
-## 54                                           Cuba   11031433  10200
-## 55                                        Curacao     146836  15000
-## 56                                         Cyprus    1189197  32800
-## 57                                        Czechia   10644842  31600
-## 58                                        Denmark    5581503  45700
-## 59                                       Djibouti     828324   3200
-## 60                                       Dominica      73607  10700
-## 61                             Dominican Republic   10478756  15000
-## 62                                        Ecuador   15868396  11300
-## 63                                          Egypt   88487396  11800
-## 64                                    El Salvador    6141350   8300
-## 65                              Equatorial Guinea     740743  31800
-## 66                                        Eritrea    6527689   1300
-## 67                                        Estonia    1265420  28600
-## 68                                       Ethiopia   99465819   1800
-## 69              Falkland Islands (Islas Malvinas)       3361  55400
-## 70                                  Faroe Islands      50196  36600
-## 71                                           Fiji     909389   9000
-## 72                                        Finland    5476922  41100
-## 73                                         France   66553766  41200
-## 74                               French Polynesia     282703  26100
-## 75                                          Gabon    1705336  18600
-## 76                                    Gambia, The    1967709   1600
-## 77                                     Gaza Strip    1869055     NA
-## 78                                        Georgia    4931226   9600
-## 79                                        Germany   80854408  46900
-## 80                                          Ghana   26327649   4300
-## 81                                      Gibraltar      29258  43000
-## 82                                         Greece   10775643  26400
-## 83                                      Greenland      57733  37900
-## 84                                        Grenada     110694  13100
-## 85                                           Guam     161785  30500
-## 86                                      Guatemala   14918999   7700
-## 87                                       Guernsey      66080  52300
-## 88                                         Guinea   11780162   1200
-## 89                                  Guinea-Bissau    1726170   1500
-## 90                                         Guyana     735222   7500
-## 91                                          Haiti   10110019   1800
-## 92                        Holy See (Vatican City)        842     NA
-## 93                                       Honduras    8746673   4900
-## 94                                      Hong Kong    7141106  56700
-## 95                                        Hungary    9897541  26200
-## 96                                        Iceland     331918  46100
-## 97                                          India 1251695584   6200
-## 98                                      Indonesia  255993674  11100
-## 99                                           Iran   81824270  17300
-## 100                                          Iraq   37056169  15500
-## 101                                       Ireland    4892305  55500
-## 102                                   Isle of Man      87545  83100
-## 103                                        Israel    8049314  33700
-## 104                                         Italy   61855120  35700
-## 105                                       Jamaica    2950210   8800
-## 106                                         Japan  126919659  38100
-## 107                                        Jersey      97294  57000
-## 108                                        Jordan    8117564  12100
-## 109                                    Kazakhstan   18157122  24300
-## 110                                         Kenya   45925301   3200
-## 111                                      Kiribati     105711   1800
-## 112                                  Korea, North   24983205   1800
-## 113                                  Korea, South   49115196  36500
-## 114                                        Kosovo    1870981     NA
-## 115                                        Kuwait    2788534  70200
-## 116                                    Kyrgyzstan    5664939   3400
-## 117                                          Laos    6911544   5300
-## 118                                        Latvia    1986705  24700
-## 119                                       Lebanon    6184701  18200
-## 120                                       Lesotho    1947701   3000
-## 121                                       Liberia    4195666    900
-## 122                                         Libya    6411776  14600
-## 123                                 Liechtenstein      37624  89400
-## 124                                     Lithuania    2884433  28400
-## 125                                    Luxembourg     570252  99000
-## 126                                         Macau     592731  98200
-## 127                                     Macedonia    2096015  14000
-## 128                                    Madagascar   23812681   1500
-## 129                                        Malawi   17964697   1100
-## 130                                      Malaysia   30513848  26300
-## 131                                      Maldives     393253  14900
-## 132                                          Mali   16955536   2200
-## 133                                         Malta     413965  35900
-## 134                              Marshall Islands      72191   3200
-## 135                                    Mauritania    3596702   4400
-## 136                                     Mauritius    1339827  19500
-## 137                                        Mexico  121736809  17500
-## 138               Micronesia, Federated States of     105216   3000
-## 139                                       Moldova    3546847   5000
-## 140                                        Monaco      30535  78700
-## 141                                      Mongolia    2992908  12100
-## 142                                    Montenegro     647073  16100
-## 143                                    Montserrat       5241   8500
-## 144                                       Morocco   33322699   8200
-## 145                                    Mozambique   25303113   1200
-## 146                                       Namibia    2212307  11400
-## 147                                         Nauru       9540  14800
-## 148                                         Nepal   31551305   2500
-## 149                                   Netherlands   16947904  49200
-## 150                                 New Caledonia     271615  38800
-## 151                                   New Zealand    4438393  36200
-## 152                                     Nicaragua    5907881   5000
-## 153                                         Niger   18045729   1100
-## 154                                       Nigeria  181562056   6100
-## 155                                          Niue       1190   5800
-## 156                                Norfolk Island       2210     NA
-## 157                      Northern Mariana Islands      52344  13300
-## 158                                        Norway    5207689  68400
-## 159                                          Oman    3286936  44600
-## 160                                      Pakistan  199085847   5000
-## 161                                         Palau      21265  15100
-## 162                                        Panama    3657024  21800
-## 163                              Papua New Guinea    6672429   2700
-## 164                                      Paraguay    6783272   8700
-## 165                                          Peru   30444999  12200
-## 166                                   Philippines  100998376   7300
-## 167                              Pitcairn Islands         48     NA
-## 168                                        Poland   38562189  26500
-## 169                                      Portugal   10825309  27800
-## 170                                   Puerto Rico    3598357  38000
-## 171                                         Qatar    2194817 132100
-## 172                                       Romania   21666350  20800
-## 173                                        Russia  142423773  25400
-## 174                                        Rwanda   12661733   1800
-## 175 Saint Helena, Ascension, and Tristan da Cunha       7795   7800
-## 176                         Saint Kitts and Nevis      51936  24600
-## 177                                   Saint Lucia     163922  11700
-## 178                                  Saint Martin      31754  19300
-## 179                     Saint Pierre and Miquelon       5657  34900
-## 180              Saint Vincent and the Grenadines     102627  11000
-## 181                                         Samoa     197773   5200
-## 182                                    San Marino      33020  63900
-## 183                         Sao Tome and Principe     194006   3200
-## 184                                  Saudi Arabia   27752316  53600
-## 185                                       Senegal   13975834   2500
-## 186                                        Serbia    7176794  13700
-## 187                                    Seychelles      92430  26300
-## 188                                  Sierra Leone    5879098   1600
-## 189                                     Singapore    5674472  85300
-## 190                                  Sint Maarten      39689  66800
-## 191                                      Slovakia    5445027  29700
-## 192                                      Slovenia    1983412  31000
-## 193                               Solomon Islands     622469   1900
-## 194                                       Somalia   10616380    400
-## 195                                  South Africa   53675563  13200
-## 196                                   South Sudan   12042910   2000
-## 197                                         Spain   48146134  34800
-## 198                                     Sri Lanka   22053488  10600
-## 199                                         Sudan   36108853   4300
-## 200                                      Suriname     579633  16300
-## 201                                      Svalbard       1872     NA
-## 202                                     Swaziland    1435613   8500
-## 203                                        Sweden    9801616  47900
-## 204                                   Switzerland    8121830  58600
-## 205                                         Syria   17064854   5100
-## 206                                        Taiwan   23415126  46800
-## 207                                    Tajikistan    8191958   2700
-## 208                                      Tanzania   51045882   2900
-## 209                                      Thailand   67976405  16100
-## 210                                   Timor-Leste    1231116   5600
-## 211                                          Togo    7552318   1500
-## 212                                       Tokelau       1337   1000
-## 213                                         Tonga     106501   5100
-## 214                           Trinidad and Tobago    1222363  32600
-## 215                                       Tunisia   11037225  11400
-## 216                                        Turkey   79414269  20400
-## 217                                  Turkmenistan    5231422  16400
-## 218                      Turks and Caicos Islands      50280  29100
-## 219                                        Tuvalu      10869   3400
-## 220                                        Uganda   37101745   2000
-## 221                                       Ukraine   44429471   7500
-## 222                          United Arab Emirates    5779760  67600
-## 223                                United Kingdom   64088222  41200
-## 224                                 United States  321368864  55800
-## 225                                       Uruguay    3341893  21500
-## 226                                    Uzbekistan   29199942   6100
-## 227                                       Vanuatu     272264   2500
-## 228                                     Venezuela   29275460  16700
-## 229                                       Vietnam   94348835   6000
-## 230                                Virgin Islands     103574  36100
-## 231                             Wallis and Futuna      15613   3800
-## 232                                     West Bank    2785366   4300
-## 233                                Western Sahara     570866   2500
-## 234                                         Yemen   26737317   2700
-## 235                                        Zambia   15066266   3900
-## 236                                      Zimbabwe   14229541   2100</code></pre>
-<pre class="r"><code>#I can also do it like this
-CIACountries %&gt;% select(country, pop, gdp)</code></pre>
-<pre><code>##                                           country        pop    gdp
-## 1                                     Afghanistan   32564342   1900
-## 2                                         Albania    3029278  11900
-## 3                                         Algeria   39542166  14500
-## 4                                  American Samoa      54343  13000
-## 5                                         Andorra      85580  37200
-## 6                                          Angola   19625353   7300
-## 7                                        Anguilla      16418  12200
-## 8                             Antigua and Barbuda      92436  23600
-## 9                                       Argentina   43431886  22600
-## 10                                        Armenia    3056382   8500
-## 11                                          Aruba     112162  25300
-## 12                                      Australia   22751014  65400
-## 13                                        Austria    8665550  47300
-## 14                                     Azerbaijan    9780780  18000
-## 15                                   Bahamas, The     324597  25200
-## 16                                        Bahrain    1346613  50100
-## 17                                     Bangladesh  168957745   3600
-## 18                                       Barbados     290604  16600
-## 19                                        Belarus    9589689  17700
-## 20                                        Belgium   11323973  43600
-## 21                                         Belize     347369   8400
-## 22                                          Benin   10448647   2100
-## 23                                        Bermuda      70196  85700
-## 24                                         Bhutan     741919   8200
-## 25                                        Bolivia   10800882   6500
-## 26                         Bosnia and Herzegovina    3867055  10500
-## 27                                       Botswana    2182719  16400
-## 28                                         Brazil  204259812  15600
-## 29                         British Virgin Islands      33454  42300
-## 30                                         Brunei     429646  79700
-## 31                                       Bulgaria    7186893  19100
-## 32                                   Burkina Faso   18931686   1700
-## 33                                          Burma   56320206   5500
-## 34                                        Burundi   10742276    800
-## 35                                     Cabo Verde     545993   6500
-## 36                                       Cambodia   15708756   3500
-## 37                                       Cameroon   23739218   3100
-## 38                                         Canada   35099836  45600
-## 39                                 Cayman Islands      56092  43800
-## 40                       Central African Republic    5391539    600
-## 41                                           Chad   11631456   2600
-## 42                                          Chile   17508260  23500
-## 43                                          China 1367485388  14100
-## 44                               Christmas Island       1530     NA
-## 45                        Cocos (Keeling) Islands        596     NA
-## 46                                       Colombia   46736728  13800
-## 47                                        Comoros     780971   1500
-## 48              Congo, Democratic Republic of the   79375136    800
-## 49                         Congo, Republic of the    4755097   6700
-## 50                                   Cook Islands       9838  12300
-## 51                                     Costa Rica    4814144  15500
-## 52                                  Cote d&#39;Ivoire   23295302   3300
-## 53                                        Croatia    4464844  21600
-## 54                                           Cuba   11031433  10200
-## 55                                        Curacao     146836  15000
-## 56                                         Cyprus    1189197  32800
-## 57                                        Czechia   10644842  31600
-## 58                                        Denmark    5581503  45700
-## 59                                       Djibouti     828324   3200
-## 60                                       Dominica      73607  10700
-## 61                             Dominican Republic   10478756  15000
-## 62                                        Ecuador   15868396  11300
-## 63                                          Egypt   88487396  11800
-## 64                                    El Salvador    6141350   8300
-## 65                              Equatorial Guinea     740743  31800
-## 66                                        Eritrea    6527689   1300
-## 67                                        Estonia    1265420  28600
-## 68                                       Ethiopia   99465819   1800
-## 69              Falkland Islands (Islas Malvinas)       3361  55400
-## 70                                  Faroe Islands      50196  36600
-## 71                                           Fiji     909389   9000
-## 72                                        Finland    5476922  41100
-## 73                                         France   66553766  41200
-## 74                               French Polynesia     282703  26100
-## 75                                          Gabon    1705336  18600
-## 76                                    Gambia, The    1967709   1600
-## 77                                     Gaza Strip    1869055     NA
-## 78                                        Georgia    4931226   9600
-## 79                                        Germany   80854408  46900
-## 80                                          Ghana   26327649   4300
-## 81                                      Gibraltar      29258  43000
-## 82                                         Greece   10775643  26400
-## 83                                      Greenland      57733  37900
-## 84                                        Grenada     110694  13100
-## 85                                           Guam     161785  30500
-## 86                                      Guatemala   14918999   7700
-## 87                                       Guernsey      66080  52300
-## 88                                         Guinea   11780162   1200
-## 89                                  Guinea-Bissau    1726170   1500
-## 90                                         Guyana     735222   7500
-## 91                                          Haiti   10110019   1800
-## 92                        Holy See (Vatican City)        842     NA
-## 93                                       Honduras    8746673   4900
-## 94                                      Hong Kong    7141106  56700
-## 95                                        Hungary    9897541  26200
-## 96                                        Iceland     331918  46100
-## 97                                          India 1251695584   6200
-## 98                                      Indonesia  255993674  11100
-## 99                                           Iran   81824270  17300
-## 100                                          Iraq   37056169  15500
-## 101                                       Ireland    4892305  55500
-## 102                                   Isle of Man      87545  83100
-## 103                                        Israel    8049314  33700
-## 104                                         Italy   61855120  35700
-## 105                                       Jamaica    2950210   8800
-## 106                                         Japan  126919659  38100
-## 107                                        Jersey      97294  57000
-## 108                                        Jordan    8117564  12100
-## 109                                    Kazakhstan   18157122  24300
-## 110                                         Kenya   45925301   3200
-## 111                                      Kiribati     105711   1800
-## 112                                  Korea, North   24983205   1800
-## 113                                  Korea, South   49115196  36500
-## 114                                        Kosovo    1870981     NA
-## 115                                        Kuwait    2788534  70200
-## 116                                    Kyrgyzstan    5664939   3400
-## 117                                          Laos    6911544   5300
-## 118                                        Latvia    1986705  24700
-## 119                                       Lebanon    6184701  18200
-## 120                                       Lesotho    1947701   3000
-## 121                                       Liberia    4195666    900
-## 122                                         Libya    6411776  14600
-## 123                                 Liechtenstein      37624  89400
-## 124                                     Lithuania    2884433  28400
-## 125                                    Luxembourg     570252  99000
-## 126                                         Macau     592731  98200
-## 127                                     Macedonia    2096015  14000
-## 128                                    Madagascar   23812681   1500
-## 129                                        Malawi   17964697   1100
-## 130                                      Malaysia   30513848  26300
-## 131                                      Maldives     393253  14900
-## 132                                          Mali   16955536   2200
-## 133                                         Malta     413965  35900
-## 134                              Marshall Islands      72191   3200
-## 135                                    Mauritania    3596702   4400
-## 136                                     Mauritius    1339827  19500
-## 137                                        Mexico  121736809  17500
-## 138               Micronesia, Federated States of     105216   3000
-## 139                                       Moldova    3546847   5000
-## 140                                        Monaco      30535  78700
-## 141                                      Mongolia    2992908  12100
-## 142                                    Montenegro     647073  16100
-## 143                                    Montserrat       5241   8500
-## 144                                       Morocco   33322699   8200
-## 145                                    Mozambique   25303113   1200
-## 146                                       Namibia    2212307  11400
-## 147                                         Nauru       9540  14800
-## 148                                         Nepal   31551305   2500
-## 149                                   Netherlands   16947904  49200
-## 150                                 New Caledonia     271615  38800
-## 151                                   New Zealand    4438393  36200
-## 152                                     Nicaragua    5907881   5000
-## 153                                         Niger   18045729   1100
-## 154                                       Nigeria  181562056   6100
-## 155                                          Niue       1190   5800
-## 156                                Norfolk Island       2210     NA
-## 157                      Northern Mariana Islands      52344  13300
-## 158                                        Norway    5207689  68400
-## 159                                          Oman    3286936  44600
-## 160                                      Pakistan  199085847   5000
-## 161                                         Palau      21265  15100
-## 162                                        Panama    3657024  21800
-## 163                              Papua New Guinea    6672429   2700
-## 164                                      Paraguay    6783272   8700
-## 165                                          Peru   30444999  12200
-## 166                                   Philippines  100998376   7300
-## 167                              Pitcairn Islands         48     NA
-## 168                                        Poland   38562189  26500
-## 169                                      Portugal   10825309  27800
-## 170                                   Puerto Rico    3598357  38000
-## 171                                         Qatar    2194817 132100
-## 172                                       Romania   21666350  20800
-## 173                                        Russia  142423773  25400
-## 174                                        Rwanda   12661733   1800
-## 175 Saint Helena, Ascension, and Tristan da Cunha       7795   7800
-## 176                         Saint Kitts and Nevis      51936  24600
-## 177                                   Saint Lucia     163922  11700
-## 178                                  Saint Martin      31754  19300
-## 179                     Saint Pierre and Miquelon       5657  34900
-## 180              Saint Vincent and the Grenadines     102627  11000
-## 181                                         Samoa     197773   5200
-## 182                                    San Marino      33020  63900
-## 183                         Sao Tome and Principe     194006   3200
-## 184                                  Saudi Arabia   27752316  53600
-## 185                                       Senegal   13975834   2500
-## 186                                        Serbia    7176794  13700
-## 187                                    Seychelles      92430  26300
-## 188                                  Sierra Leone    5879098   1600
-## 189                                     Singapore    5674472  85300
-## 190                                  Sint Maarten      39689  66800
-## 191                                      Slovakia    5445027  29700
-## 192                                      Slovenia    1983412  31000
-## 193                               Solomon Islands     622469   1900
-## 194                                       Somalia   10616380    400
-## 195                                  South Africa   53675563  13200
-## 196                                   South Sudan   12042910   2000
-## 197                                         Spain   48146134  34800
-## 198                                     Sri Lanka   22053488  10600
-## 199                                         Sudan   36108853   4300
-## 200                                      Suriname     579633  16300
-## 201                                      Svalbard       1872     NA
-## 202                                     Swaziland    1435613   8500
-## 203                                        Sweden    9801616  47900
-## 204                                   Switzerland    8121830  58600
-## 205                                         Syria   17064854   5100
-## 206                                        Taiwan   23415126  46800
-## 207                                    Tajikistan    8191958   2700
-## 208                                      Tanzania   51045882   2900
-## 209                                      Thailand   67976405  16100
-## 210                                   Timor-Leste    1231116   5600
-## 211                                          Togo    7552318   1500
-## 212                                       Tokelau       1337   1000
-## 213                                         Tonga     106501   5100
-## 214                           Trinidad and Tobago    1222363  32600
-## 215                                       Tunisia   11037225  11400
-## 216                                        Turkey   79414269  20400
-## 217                                  Turkmenistan    5231422  16400
-## 218                      Turks and Caicos Islands      50280  29100
-## 219                                        Tuvalu      10869   3400
-## 220                                        Uganda   37101745   2000
-## 221                                       Ukraine   44429471   7500
-## 222                          United Arab Emirates    5779760  67600
-## 223                                United Kingdom   64088222  41200
-## 224                                 United States  321368864  55800
-## 225                                       Uruguay    3341893  21500
-## 226                                    Uzbekistan   29199942   6100
-## 227                                       Vanuatu     272264   2500
-## 228                                     Venezuela   29275460  16700
-## 229                                       Vietnam   94348835   6000
-## 230                                Virgin Islands     103574  36100
-## 231                             Wallis and Futuna      15613   3800
-## 232                                     West Bank    2785366   4300
-## 233                                Western Sahara     570866   2500
-## 234                                         Yemen   26737317   2700
-## 235                                        Zambia   15066266   3900
-## 236                                      Zimbabwe   14229541   2100</code></pre>
-<pre class="r"><code>#In base R
-CIACountries[, c(&quot;country&quot;, &quot;pop&quot;, &quot;gdp&quot;)]</code></pre>
-<pre><code>##                                           country        pop    gdp
-## 1                                     Afghanistan   32564342   1900
-## 2                                         Albania    3029278  11900
-## 3                                         Algeria   39542166  14500
-## 4                                  American Samoa      54343  13000
-## 5                                         Andorra      85580  37200
-## 6                                          Angola   19625353   7300
-## 7                                        Anguilla      16418  12200
-## 8                             Antigua and Barbuda      92436  23600
-## 9                                       Argentina   43431886  22600
-## 10                                        Armenia    3056382   8500
-## 11                                          Aruba     112162  25300
-## 12                                      Australia   22751014  65400
-## 13                                        Austria    8665550  47300
-## 14                                     Azerbaijan    9780780  18000
-## 15                                   Bahamas, The     324597  25200
-## 16                                        Bahrain    1346613  50100
-## 17                                     Bangladesh  168957745   3600
-## 18                                       Barbados     290604  16600
-## 19                                        Belarus    9589689  17700
-## 20                                        Belgium   11323973  43600
-## 21                                         Belize     347369   8400
-## 22                                          Benin   10448647   2100
-## 23                                        Bermuda      70196  85700
-## 24                                         Bhutan     741919   8200
-## 25                                        Bolivia   10800882   6500
-## 26                         Bosnia and Herzegovina    3867055  10500
-## 27                                       Botswana    2182719  16400
-## 28                                         Brazil  204259812  15600
-## 29                         British Virgin Islands      33454  42300
-## 30                                         Brunei     429646  79700
-## 31                                       Bulgaria    7186893  19100
-## 32                                   Burkina Faso   18931686   1700
-## 33                                          Burma   56320206   5500
-## 34                                        Burundi   10742276    800
-## 35                                     Cabo Verde     545993   6500
-## 36                                       Cambodia   15708756   3500
-## 37                                       Cameroon   23739218   3100
-## 38                                         Canada   35099836  45600
-## 39                                 Cayman Islands      56092  43800
-## 40                       Central African Republic    5391539    600
-## 41                                           Chad   11631456   2600
-## 42                                          Chile   17508260  23500
-## 43                                          China 1367485388  14100
-## 44                               Christmas Island       1530     NA
-## 45                        Cocos (Keeling) Islands        596     NA
-## 46                                       Colombia   46736728  13800
-## 47                                        Comoros     780971   1500
-## 48              Congo, Democratic Republic of the   79375136    800
-## 49                         Congo, Republic of the    4755097   6700
-## 50                                   Cook Islands       9838  12300
-## 51                                     Costa Rica    4814144  15500
-## 52                                  Cote d&#39;Ivoire   23295302   3300
-## 53                                        Croatia    4464844  21600
-## 54                                           Cuba   11031433  10200
-## 55                                        Curacao     146836  15000
-## 56                                         Cyprus    1189197  32800
-## 57                                        Czechia   10644842  31600
-## 58                                        Denmark    5581503  45700
-## 59                                       Djibouti     828324   3200
-## 60                                       Dominica      73607  10700
-## 61                             Dominican Republic   10478756  15000
-## 62                                        Ecuador   15868396  11300
-## 63                                          Egypt   88487396  11800
-## 64                                    El Salvador    6141350   8300
-## 65                              Equatorial Guinea     740743  31800
-## 66                                        Eritrea    6527689   1300
-## 67                                        Estonia    1265420  28600
-## 68                                       Ethiopia   99465819   1800
-## 69              Falkland Islands (Islas Malvinas)       3361  55400
-## 70                                  Faroe Islands      50196  36600
-## 71                                           Fiji     909389   9000
-## 72                                        Finland    5476922  41100
-## 73                                         France   66553766  41200
-## 74                               French Polynesia     282703  26100
-## 75                                          Gabon    1705336  18600
-## 76                                    Gambia, The    1967709   1600
-## 77                                     Gaza Strip    1869055     NA
-## 78                                        Georgia    4931226   9600
-## 79                                        Germany   80854408  46900
-## 80                                          Ghana   26327649   4300
-## 81                                      Gibraltar      29258  43000
-## 82                                         Greece   10775643  26400
-## 83                                      Greenland      57733  37900
-## 84                                        Grenada     110694  13100
-## 85                                           Guam     161785  30500
-## 86                                      Guatemala   14918999   7700
-## 87                                       Guernsey      66080  52300
-## 88                                         Guinea   11780162   1200
-## 89                                  Guinea-Bissau    1726170   1500
-## 90                                         Guyana     735222   7500
-## 91                                          Haiti   10110019   1800
-## 92                        Holy See (Vatican City)        842     NA
-## 93                                       Honduras    8746673   4900
-## 94                                      Hong Kong    7141106  56700
-## 95                                        Hungary    9897541  26200
-## 96                                        Iceland     331918  46100
-## 97                                          India 1251695584   6200
-## 98                                      Indonesia  255993674  11100
-## 99                                           Iran   81824270  17300
-## 100                                          Iraq   37056169  15500
-## 101                                       Ireland    4892305  55500
-## 102                                   Isle of Man      87545  83100
-## 103                                        Israel    8049314  33700
-## 104                                         Italy   61855120  35700
-## 105                                       Jamaica    2950210   8800
-## 106                                         Japan  126919659  38100
-## 107                                        Jersey      97294  57000
-## 108                                        Jordan    8117564  12100
-## 109                                    Kazakhstan   18157122  24300
-## 110                                         Kenya   45925301   3200
-## 111                                      Kiribati     105711   1800
-## 112                                  Korea, North   24983205   1800
-## 113                                  Korea, South   49115196  36500
-## 114                                        Kosovo    1870981     NA
-## 115                                        Kuwait    2788534  70200
-## 116                                    Kyrgyzstan    5664939   3400
-## 117                                          Laos    6911544   5300
-## 118                                        Latvia    1986705  24700
-## 119                                       Lebanon    6184701  18200
-## 120                                       Lesotho    1947701   3000
-## 121                                       Liberia    4195666    900
-## 122                                         Libya    6411776  14600
-## 123                                 Liechtenstein      37624  89400
-## 124                                     Lithuania    2884433  28400
-## 125                                    Luxembourg     570252  99000
-## 126                                         Macau     592731  98200
-## 127                                     Macedonia    2096015  14000
-## 128                                    Madagascar   23812681   1500
-## 129                                        Malawi   17964697   1100
-## 130                                      Malaysia   30513848  26300
-## 131                                      Maldives     393253  14900
-## 132                                          Mali   16955536   2200
-## 133                                         Malta     413965  35900
-## 134                              Marshall Islands      72191   3200
-## 135                                    Mauritania    3596702   4400
-## 136                                     Mauritius    1339827  19500
-## 137                                        Mexico  121736809  17500
-## 138               Micronesia, Federated States of     105216   3000
-## 139                                       Moldova    3546847   5000
-## 140                                        Monaco      30535  78700
-## 141                                      Mongolia    2992908  12100
-## 142                                    Montenegro     647073  16100
-## 143                                    Montserrat       5241   8500
-## 144                                       Morocco   33322699   8200
-## 145                                    Mozambique   25303113   1200
-## 146                                       Namibia    2212307  11400
-## 147                                         Nauru       9540  14800
-## 148                                         Nepal   31551305   2500
-## 149                                   Netherlands   16947904  49200
-## 150                                 New Caledonia     271615  38800
-## 151                                   New Zealand    4438393  36200
-## 152                                     Nicaragua    5907881   5000
-## 153                                         Niger   18045729   1100
-## 154                                       Nigeria  181562056   6100
-## 155                                          Niue       1190   5800
-## 156                                Norfolk Island       2210     NA
-## 157                      Northern Mariana Islands      52344  13300
-## 158                                        Norway    5207689  68400
-## 159                                          Oman    3286936  44600
-## 160                                      Pakistan  199085847   5000
-## 161                                         Palau      21265  15100
-## 162                                        Panama    3657024  21800
-## 163                              Papua New Guinea    6672429   2700
-## 164                                      Paraguay    6783272   8700
-## 165                                          Peru   30444999  12200
-## 166                                   Philippines  100998376   7300
-## 167                              Pitcairn Islands         48     NA
-## 168                                        Poland   38562189  26500
-## 169                                      Portugal   10825309  27800
-## 170                                   Puerto Rico    3598357  38000
-## 171                                         Qatar    2194817 132100
-## 172                                       Romania   21666350  20800
-## 173                                        Russia  142423773  25400
-## 174                                        Rwanda   12661733   1800
-## 175 Saint Helena, Ascension, and Tristan da Cunha       7795   7800
-## 176                         Saint Kitts and Nevis      51936  24600
-## 177                                   Saint Lucia     163922  11700
-## 178                                  Saint Martin      31754  19300
-## 179                     Saint Pierre and Miquelon       5657  34900
-## 180              Saint Vincent and the Grenadines     102627  11000
-## 181                                         Samoa     197773   5200
-## 182                                    San Marino      33020  63900
-## 183                         Sao Tome and Principe     194006   3200
-## 184                                  Saudi Arabia   27752316  53600
-## 185                                       Senegal   13975834   2500
-## 186                                        Serbia    7176794  13700
-## 187                                    Seychelles      92430  26300
-## 188                                  Sierra Leone    5879098   1600
-## 189                                     Singapore    5674472  85300
-## 190                                  Sint Maarten      39689  66800
-## 191                                      Slovakia    5445027  29700
-## 192                                      Slovenia    1983412  31000
-## 193                               Solomon Islands     622469   1900
-## 194                                       Somalia   10616380    400
-## 195                                  South Africa   53675563  13200
-## 196                                   South Sudan   12042910   2000
-## 197                                         Spain   48146134  34800
-## 198                                     Sri Lanka   22053488  10600
-## 199                                         Sudan   36108853   4300
-## 200                                      Suriname     579633  16300
-## 201                                      Svalbard       1872     NA
-## 202                                     Swaziland    1435613   8500
-## 203                                        Sweden    9801616  47900
-## 204                                   Switzerland    8121830  58600
-## 205                                         Syria   17064854   5100
-## 206                                        Taiwan   23415126  46800
-## 207                                    Tajikistan    8191958   2700
-## 208                                      Tanzania   51045882   2900
-## 209                                      Thailand   67976405  16100
-## 210                                   Timor-Leste    1231116   5600
-## 211                                          Togo    7552318   1500
-## 212                                       Tokelau       1337   1000
-## 213                                         Tonga     106501   5100
-## 214                           Trinidad and Tobago    1222363  32600
-## 215                                       Tunisia   11037225  11400
-## 216                                        Turkey   79414269  20400
-## 217                                  Turkmenistan    5231422  16400
-## 218                      Turks and Caicos Islands      50280  29100
-## 219                                        Tuvalu      10869   3400
-## 220                                        Uganda   37101745   2000
-## 221                                       Ukraine   44429471   7500
-## 222                          United Arab Emirates    5779760  67600
-## 223                                United Kingdom   64088222  41200
-## 224                                 United States  321368864  55800
-## 225                                       Uruguay    3341893  21500
-## 226                                    Uzbekistan   29199942   6100
-## 227                                       Vanuatu     272264   2500
-## 228                                     Venezuela   29275460  16700
-## 229                                       Vietnam   94348835   6000
-## 230                                Virgin Islands     103574  36100
-## 231                             Wallis and Futuna      15613   3800
-## 232                                     West Bank    2785366   4300
-## 233                                Western Sahara     570866   2500
-## 234                                         Yemen   26737317   2700
-## 235                                        Zambia   15066266   3900
-## 236                                      Zimbabwe   14229541   2100</code></pre>
-<pre class="r"><code>#or
-subset(CIACountries, select = c(&quot;country&quot;, &quot;pop&quot;, &quot;gdp&quot;))</code></pre>
-<pre><code>##                                           country        pop    gdp
-## 1                                     Afghanistan   32564342   1900
-## 2                                         Albania    3029278  11900
-## 3                                         Algeria   39542166  14500
-## 4                                  American Samoa      54343  13000
-## 5                                         Andorra      85580  37200
-## 6                                          Angola   19625353   7300
-## 7                                        Anguilla      16418  12200
-## 8                             Antigua and Barbuda      92436  23600
-## 9                                       Argentina   43431886  22600
-## 10                                        Armenia    3056382   8500
-## 11                                          Aruba     112162  25300
-## 12                                      Australia   22751014  65400
-## 13                                        Austria    8665550  47300
-## 14                                     Azerbaijan    9780780  18000
-## 15                                   Bahamas, The     324597  25200
-## 16                                        Bahrain    1346613  50100
-## 17                                     Bangladesh  168957745   3600
-## 18                                       Barbados     290604  16600
-## 19                                        Belarus    9589689  17700
-## 20                                        Belgium   11323973  43600
-## 21                                         Belize     347369   8400
-## 22                                          Benin   10448647   2100
-## 23                                        Bermuda      70196  85700
-## 24                                         Bhutan     741919   8200
-## 25                                        Bolivia   10800882   6500
-## 26                         Bosnia and Herzegovina    3867055  10500
-## 27                                       Botswana    2182719  16400
-## 28                                         Brazil  204259812  15600
-## 29                         British Virgin Islands      33454  42300
-## 30                                         Brunei     429646  79700
-## 31                                       Bulgaria    7186893  19100
-## 32                                   Burkina Faso   18931686   1700
-## 33                                          Burma   56320206   5500
-## 34                                        Burundi   10742276    800
-## 35                                     Cabo Verde     545993   6500
-## 36                                       Cambodia   15708756   3500
-## 37                                       Cameroon   23739218   3100
-## 38                                         Canada   35099836  45600
-## 39                                 Cayman Islands      56092  43800
-## 40                       Central African Republic    5391539    600
-## 41                                           Chad   11631456   2600
-## 42                                          Chile   17508260  23500
-## 43                                          China 1367485388  14100
-## 44                               Christmas Island       1530     NA
-## 45                        Cocos (Keeling) Islands        596     NA
-## 46                                       Colombia   46736728  13800
-## 47                                        Comoros     780971   1500
-## 48              Congo, Democratic Republic of the   79375136    800
-## 49                         Congo, Republic of the    4755097   6700
-## 50                                   Cook Islands       9838  12300
-## 51                                     Costa Rica    4814144  15500
-## 52                                  Cote d&#39;Ivoire   23295302   3300
-## 53                                        Croatia    4464844  21600
-## 54                                           Cuba   11031433  10200
-## 55                                        Curacao     146836  15000
-## 56                                         Cyprus    1189197  32800
-## 57                                        Czechia   10644842  31600
-## 58                                        Denmark    5581503  45700
-## 59                                       Djibouti     828324   3200
-## 60                                       Dominica      73607  10700
-## 61                             Dominican Republic   10478756  15000
-## 62                                        Ecuador   15868396  11300
-## 63                                          Egypt   88487396  11800
-## 64                                    El Salvador    6141350   8300
-## 65                              Equatorial Guinea     740743  31800
-## 66                                        Eritrea    6527689   1300
-## 67                                        Estonia    1265420  28600
-## 68                                       Ethiopia   99465819   1800
-## 69              Falkland Islands (Islas Malvinas)       3361  55400
-## 70                                  Faroe Islands      50196  36600
-## 71                                           Fiji     909389   9000
-## 72                                        Finland    5476922  41100
-## 73                                         France   66553766  41200
-## 74                               French Polynesia     282703  26100
-## 75                                          Gabon    1705336  18600
-## 76                                    Gambia, The    1967709   1600
-## 77                                     Gaza Strip    1869055     NA
-## 78                                        Georgia    4931226   9600
-## 79                                        Germany   80854408  46900
-## 80                                          Ghana   26327649   4300
-## 81                                      Gibraltar      29258  43000
-## 82                                         Greece   10775643  26400
-## 83                                      Greenland      57733  37900
-## 84                                        Grenada     110694  13100
-## 85                                           Guam     161785  30500
-## 86                                      Guatemala   14918999   7700
-## 87                                       Guernsey      66080  52300
-## 88                                         Guinea   11780162   1200
-## 89                                  Guinea-Bissau    1726170   1500
-## 90                                         Guyana     735222   7500
-## 91                                          Haiti   10110019   1800
-## 92                        Holy See (Vatican City)        842     NA
-## 93                                       Honduras    8746673   4900
-## 94                                      Hong Kong    7141106  56700
-## 95                                        Hungary    9897541  26200
-## 96                                        Iceland     331918  46100
-## 97                                          India 1251695584   6200
-## 98                                      Indonesia  255993674  11100
-## 99                                           Iran   81824270  17300
-## 100                                          Iraq   37056169  15500
-## 101                                       Ireland    4892305  55500
-## 102                                   Isle of Man      87545  83100
-## 103                                        Israel    8049314  33700
-## 104                                         Italy   61855120  35700
-## 105                                       Jamaica    2950210   8800
-## 106                                         Japan  126919659  38100
-## 107                                        Jersey      97294  57000
-## 108                                        Jordan    8117564  12100
-## 109                                    Kazakhstan   18157122  24300
-## 110                                         Kenya   45925301   3200
-## 111                                      Kiribati     105711   1800
-## 112                                  Korea, North   24983205   1800
-## 113                                  Korea, South   49115196  36500
-## 114                                        Kosovo    1870981     NA
-## 115                                        Kuwait    2788534  70200
-## 116                                    Kyrgyzstan    5664939   3400
-## 117                                          Laos    6911544   5300
-## 118                                        Latvia    1986705  24700
-## 119                                       Lebanon    6184701  18200
-## 120                                       Lesotho    1947701   3000
-## 121                                       Liberia    4195666    900
-## 122                                         Libya    6411776  14600
-## 123                                 Liechtenstein      37624  89400
-## 124                                     Lithuania    2884433  28400
-## 125                                    Luxembourg     570252  99000
-## 126                                         Macau     592731  98200
-## 127                                     Macedonia    2096015  14000
-## 128                                    Madagascar   23812681   1500
-## 129                                        Malawi   17964697   1100
-## 130                                      Malaysia   30513848  26300
-## 131                                      Maldives     393253  14900
-## 132                                          Mali   16955536   2200
-## 133                                         Malta     413965  35900
-## 134                              Marshall Islands      72191   3200
-## 135                                    Mauritania    3596702   4400
-## 136                                     Mauritius    1339827  19500
-## 137                                        Mexico  121736809  17500
-## 138               Micronesia, Federated States of     105216   3000
-## 139                                       Moldova    3546847   5000
-## 140                                        Monaco      30535  78700
-## 141                                      Mongolia    2992908  12100
-## 142                                    Montenegro     647073  16100
-## 143                                    Montserrat       5241   8500
-## 144                                       Morocco   33322699   8200
-## 145                                    Mozambique   25303113   1200
-## 146                                       Namibia    2212307  11400
-## 147                                         Nauru       9540  14800
-## 148                                         Nepal   31551305   2500
-## 149                                   Netherlands   16947904  49200
-## 150                                 New Caledonia     271615  38800
-## 151                                   New Zealand    4438393  36200
-## 152                                     Nicaragua    5907881   5000
-## 153                                         Niger   18045729   1100
-## 154                                       Nigeria  181562056   6100
-## 155                                          Niue       1190   5800
-## 156                                Norfolk Island       2210     NA
-## 157                      Northern Mariana Islands      52344  13300
-## 158                                        Norway    5207689  68400
-## 159                                          Oman    3286936  44600
-## 160                                      Pakistan  199085847   5000
-## 161                                         Palau      21265  15100
-## 162                                        Panama    3657024  21800
-## 163                              Papua New Guinea    6672429   2700
-## 164                                      Paraguay    6783272   8700
-## 165                                          Peru   30444999  12200
-## 166                                   Philippines  100998376   7300
-## 167                              Pitcairn Islands         48     NA
-## 168                                        Poland   38562189  26500
-## 169                                      Portugal   10825309  27800
-## 170                                   Puerto Rico    3598357  38000
-## 171                                         Qatar    2194817 132100
-## 172                                       Romania   21666350  20800
-## 173                                        Russia  142423773  25400
-## 174                                        Rwanda   12661733   1800
-## 175 Saint Helena, Ascension, and Tristan da Cunha       7795   7800
-## 176                         Saint Kitts and Nevis      51936  24600
-## 177                                   Saint Lucia     163922  11700
-## 178                                  Saint Martin      31754  19300
-## 179                     Saint Pierre and Miquelon       5657  34900
-## 180              Saint Vincent and the Grenadines     102627  11000
-## 181                                         Samoa     197773   5200
-## 182                                    San Marino      33020  63900
-## 183                         Sao Tome and Principe     194006   3200
-## 184                                  Saudi Arabia   27752316  53600
-## 185                                       Senegal   13975834   2500
-## 186                                        Serbia    7176794  13700
-## 187                                    Seychelles      92430  26300
-## 188                                  Sierra Leone    5879098   1600
-## 189                                     Singapore    5674472  85300
-## 190                                  Sint Maarten      39689  66800
-## 191                                      Slovakia    5445027  29700
-## 192                                      Slovenia    1983412  31000
-## 193                               Solomon Islands     622469   1900
-## 194                                       Somalia   10616380    400
-## 195                                  South Africa   53675563  13200
-## 196                                   South Sudan   12042910   2000
-## 197                                         Spain   48146134  34800
-## 198                                     Sri Lanka   22053488  10600
-## 199                                         Sudan   36108853   4300
-## 200                                      Suriname     579633  16300
-## 201                                      Svalbard       1872     NA
-## 202                                     Swaziland    1435613   8500
-## 203                                        Sweden    9801616  47900
-## 204                                   Switzerland    8121830  58600
-## 205                                         Syria   17064854   5100
-## 206                                        Taiwan   23415126  46800
-## 207                                    Tajikistan    8191958   2700
-## 208                                      Tanzania   51045882   2900
-## 209                                      Thailand   67976405  16100
-## 210                                   Timor-Leste    1231116   5600
-## 211                                          Togo    7552318   1500
-## 212                                       Tokelau       1337   1000
-## 213                                         Tonga     106501   5100
-## 214                           Trinidad and Tobago    1222363  32600
-## 215                                       Tunisia   11037225  11400
-## 216                                        Turkey   79414269  20400
-## 217                                  Turkmenistan    5231422  16400
-## 218                      Turks and Caicos Islands      50280  29100
-## 219                                        Tuvalu      10869   3400
-## 220                                        Uganda   37101745   2000
-## 221                                       Ukraine   44429471   7500
-## 222                          United Arab Emirates    5779760  67600
-## 223                                United Kingdom   64088222  41200
-## 224                                 United States  321368864  55800
-## 225                                       Uruguay    3341893  21500
-## 226                                    Uzbekistan   29199942   6100
-## 227                                       Vanuatu     272264   2500
-## 228                                     Venezuela   29275460  16700
-## 229                                       Vietnam   94348835   6000
-## 230                                Virgin Islands     103574  36100
-## 231                             Wallis and Futuna      15613   3800
-## 232                                     West Bank    2785366   4300
-## 233                                Western Sahara     570866   2500
-## 234                                         Yemen   26737317   2700
-## 235                                        Zambia   15066266   3900
-## 236                                      Zimbabwe   14229541   2100</code></pre>
-<pre class="r"><code>#filter and select
-filter(select(CIACountries, country, pop, gdp), pop &gt; 1e9)</code></pre>
-<pre><code>##   country        pop   gdp
-## 1   China 1367485388 14100
-## 2   India 1251695584  6200</code></pre>
-<pre class="r"><code>#Or we can do this with a pipeline
-CIACountries %&gt;% select(country, pop, gdp) %&gt;% filter(pop &gt; 1e9)</code></pre>
-<pre><code>##   country        pop   gdp
-## 1   China 1367485388 14100
-## 2   India 1251695584  6200</code></pre>
-<pre class="r"><code>#Or in base R
-CIACountries[CIACountries$pop &gt; 1e9,c(&quot;country&quot;, &quot;pop&quot;, &quot;gdp&quot;)]</code></pre>
-<pre><code>##    country        pop   gdp
-## 43   China 1367485388 14100
-## 97   India 1251695584  6200</code></pre>
-<pre class="r"><code>#or this:
-subset(CIACountries, pop &gt; 1e9, select = c(&quot;country&quot;, &quot;pop&quot;, &quot;gdp&quot;))</code></pre>
-<pre><code>##    country        pop   gdp
-## 43   China 1367485388 14100
-## 97   India 1251695584  6200</code></pre>
-<p>#Mutate and Rename</p>
-<pre class="r"><code>#Mutate
-#Population Density
-my_CIACountries &lt;- mutate(CIACountries, dens = pop/area)
-my_CIACountries[1,]</code></pre>
-<pre><code>##       country      pop   area oil_prod  gdp educ   roadways net_users    dens
-## 1 Afghanistan 32564342 652230        0 1900   NA 0.06462444       &gt;5% 49.9277</code></pre>
-<pre class="r"><code>my_CIACountries &lt;- CIACountries %&gt;% mutate(dens = pop/area)
-my_CIACountries[1,]</code></pre>
-<pre><code>##       country      pop   area oil_prod  gdp educ   roadways net_users    dens
-## 1 Afghanistan 32564342 652230        0 1900   NA 0.06462444       &gt;5% 49.9277</code></pre>
-<pre class="r"><code>#Base R
-library(mdsr)
-my_CIACountries$dens &lt;- CIACountries$pop / CIACountries$area
+<pre class="r"><code>library(mdsr)</code></pre>
+<p>This $#!? is automated</p>
+<div id="question-1" class="section level3">
+<h3>Question 1</h3>
+<p>It is done, I’m not sure I can show it in a code section here but
+I’ll show you a mathematical P</p>
+<p><span class="math inline">\(P\)</span></p>
+<p>Pretty cool, right?</p>
+<p>The above is before you explained how to prove it, but I laughed
+enough to keep it</p>
+<p>Here’s the URL: <a href="https://github.com/erichardson2/DSCI101.git" class="uri">https://github.com/erichardson2/DSCI101.git</a></p>
+</div>
+<div id="question-2" class="section level3">
+<h3>Question 2</h3>
+<pre class="r"><code>cubs &lt;- read.csv(&quot;https://raw.githubusercontent.com/gjm112/DSCI101/main/data/cubs_all_time.csv&quot;)</code></pre>
+<div id="part-a" class="section level4">
+<h4>Part A</h4>
+<pre class="r"><code>#Sum of the amount of games the Cubs lost
+won &lt;- sum(cubs$W)
 
-#rename
-my_CIACountries &lt;- CIACountries %&gt;% rename(education = educ)
-my_CIACountries[1,]</code></pre>
-<pre><code>##       country      pop   area oil_prod  gdp education   roadways net_users
-## 1 Afghanistan 32564342 652230        0 1900        NA 0.06462444       &gt;5%</code></pre>
-<p>#arrange</p>
-<pre class="r"><code>#Sorting with arrange
-#Defaults to ascending
-CIACountries_sort &lt;- arrange(CIACountries, gdp)
-CIACountries_sort[1:5,]</code></pre>
-<pre><code>##                             country      pop    area oil_prod gdp educ
-## 1                           Somalia 10616380  637657        0 400   NA
-## 2          Central African Republic  5391539  622984        0 600  1.2
-## 3                           Burundi 10742276   27830        0 800  5.8
-## 4 Congo, Democratic Republic of the 79375136 2344858    20000 800  2.5
-## 5                           Liberia  4195666  111369        0 900  2.8
-##     roadways net_users
-## 1 0.03465813       &gt;0%
-## 2 0.03254979       &gt;0%
-## 3 0.44275961       &gt;0%
-## 4 0.06546111       &gt;0%
-## 5 0.09517909       &gt;0%</code></pre>
-<pre class="r"><code>#Sort descending
-CIACountries_sort &lt;- arrange(CIACountries, desc(gdp))
-CIACountries_sort[1:5,]</code></pre>
-<pre><code>##         country     pop  area oil_prod    gdp educ   roadways net_users
-## 1         Qatar 2194817 11586  1540000 132100  2.5  0.8484378      &gt;60%
-## 2    Luxembourg  570252  2586        0  99000  3.7  1.1210363      &gt;60%
-## 3         Macau  592731    28        0  98200  2.7 14.7500000      &gt;35%
-## 4 Liechtenstein   37624   160       NA  89400  2.1  2.3750000      &gt;60%
-## 5       Bermuda   70196    54        0  85700  2.6  8.2777778      &gt;60%</code></pre>
-<pre class="r"><code>CIACountries_sort &lt;- CIACountries %&gt;% arrange(desc(gdp))
-CIACountries_sort[1:5,]</code></pre>
-<pre><code>##         country     pop  area oil_prod    gdp educ   roadways net_users
-## 1         Qatar 2194817 11586  1540000 132100  2.5  0.8484378      &gt;60%
-## 2    Luxembourg  570252  2586        0  99000  3.7  1.1210363      &gt;60%
-## 3         Macau  592731    28        0  98200  2.7 14.7500000      &gt;35%
-## 4 Liechtenstein   37624   160       NA  89400  2.1  2.3750000      &gt;60%
-## 5       Bermuda   70196    54        0  85700  2.6  8.2777778      &gt;60%</code></pre>
-<pre class="r"><code>#Base R with order
-CIACountries_sort &lt;- CIACountries[order(CIACountries$gdp),]
-CIACountries_sort[1:5,]</code></pre>
-<pre><code>##                               country      pop    area oil_prod gdp educ
-## 194                           Somalia 10616380  637657        0 400   NA
-## 40           Central African Republic  5391539  622984        0 600  1.2
-## 34                            Burundi 10742276   27830        0 800  5.8
-## 48  Congo, Democratic Republic of the 79375136 2344858    20000 800  2.5
-## 121                           Liberia  4195666  111369        0 900  2.8
-##       roadways net_users
-## 194 0.03465813       &gt;0%
-## 40  0.03254979       &gt;0%
-## 34  0.44275961       &gt;0%
-## 48  0.06546111       &gt;0%
-## 121 0.09517909       &gt;0%</code></pre>
-<pre class="r"><code>CIACountries_sort &lt;- CIACountries[order(-CIACountries$gdp),]
-CIACountries_sort[1:5,]</code></pre>
-<pre><code>##           country     pop  area oil_prod    gdp educ   roadways net_users
-## 171         Qatar 2194817 11586  1540000 132100  2.5  0.8484378      &gt;60%
-## 125    Luxembourg  570252  2586        0  99000  3.7  1.1210363      &gt;60%
-## 126         Macau  592731    28        0  98200  2.7 14.7500000      &gt;35%
-## 123 Liechtenstein   37624   160       NA  89400  2.1  2.3750000      &gt;60%
-## 23        Bermuda   70196    54        0  85700  2.6  8.2777778      &gt;60%</code></pre>
-<p>#Summarize and Group_by</p>
-<pre class="r"><code>#What is the average area by high vs low education countries?
-my_CIACountries &lt;-
-  CIACountries %&gt;% mutate(high_educ = educ &gt; 4.5) %&gt;% group_by(high_educ) %&gt;% summarize(mn_area = mean(area))
-my_CIACountries</code></pre>
-<pre><code>## # A tibble: 3 × 2
-##   high_educ mn_area
-##   &lt;lgl&gt;       &lt;dbl&gt;
-## 1 FALSE     602415.
-## 2 TRUE      722057.
-## 3 NA        341473.</code></pre>
-<pre class="r"><code>#Base R
-my_CIACountries &lt;- CIACountries
-my_CIACountries$high_educ &lt;- CIACountries$educ &gt; 4.5
-tapply(my_CIACountries$area,my_CIACountries$high_educ, mean)</code></pre>
-<pre><code>##    FALSE     TRUE 
-## 602414.5 722057.3</code></pre>
-<p>##In class assignment: What first letter has the largest
-population?</p>
-<p>#What proportion of countries produce any oil stratified by net users
-class?</p>
+#Sum of the amount of games the Cubs lost
+lost &lt;- sum(cubs$L)</code></pre>
+<p>The Cubs won a total of 11141 games and lost a total of 10592 games
+between 1876 and 2022.</p>
+</div>
+<div id="part-b" class="section level4">
+<h4>Part B</h4>
+<pre class="r"><code>#Season with most runs
+mostYear &lt;- cubs$Year[which(cubs$R == max(cubs$R))]
+
+#Season with least runs
+leastYear &lt;- cubs$Year[which(cubs$R == min(cubs$R))]</code></pre>
+<p>The Cubs scored the most runs in 1894 and the least runs in 2020.</p>
+<p>2020 was a very depressing season.</p>
+</div>
+<div id="part-c" class="section level4">
+<h4>Part C</h4>
+<pre class="r"><code>#filter dataframe by years that attendance over 3mill
+attHigh &lt;- filter(cubs, Attendance &gt; 3000000)
+
+amount &lt;- length(attHigh$Attendance)</code></pre>
+<p>The Cubs had 12 seasons that were above 3 million in total
+attendance</p>
+</div>
+<div id="part-d" class="section level4">
+<h4>Part D</h4>
+<pre class="r"><code>cubsRatio &lt;- mutate(cubs, ratio = R/RA)
+
+maxRatio &lt;- max(cubsRatio$ratio)</code></pre>
+<p>The greatest ratio of runs for to runs against between 1982 and 2000
+was about 2.4280156:1</p>
+</div>
+</div>
+<div id="question-3" class="section level2">
+<h2>Question 3</h2>
+<pre class="r"><code>college &lt;- read.csv(&quot;https://raw.githubusercontent.com/gjm112/DSCI101/main/data/top_colleges_2022.csv&quot;)</code></pre>
+<div id="part-a-1" class="section level4">
+<h4>Part A</h4>
+<pre class="r"><code>collegeIll &lt;- filter(college, state == &#39;IL&#39;)
+
+amountIll &lt;- length(collegeIll$state)</code></pre>
+<p>There are 16 colleges from this data set that are in Illinois</p>
+</div>
+<div id="part-b-1" class="section level4">
+<h4>Part B</h4>
+<pre class="r"><code>underPopLoy &lt;- college$undergradPop[which(college$organizationName == &#39;Loyola University Chicago&#39;)]
+
+higher &lt;- college %&gt;%
+  filter(undergradPop &gt; underPopLoy) %&gt;%
+  summarize(length(undergradPop))</code></pre>
+<p>There are 168 colleges with a larger undergraduate student population
+than Loyola University Chicago</p>
+</div>
+<div id="part-c-1" class="section level4">
+<h4>Part C</h4>
+<pre class="r"><code>#Latitude is North and South
+North &lt;- college %&gt;%
+  summarize(organizationName,latitude, NA.rm = TRUE) %&gt;%
+  arrange(desc(latitude))
+
+South &lt;- college %&gt;%
+  summarize(organizationName,latitude, NA.rm = TRUE) %&gt;%
+  arrange(latitude)</code></pre>
+<p>The college furthest North is Western Washington University. While
+Alaska is the state furthest to the north, they are not represented in
+this data set. As such, Washington has the majority of the most northern
+colleges</p>
+<p>The college furthest South is University of Hawaii, Manoa. Hawaii is
+the only official US state below the Tropic of Cancer</p>
+<pre class="r"><code>#Longitude is East and West
+East &lt;- college %&gt;%
+  summarize(organizationName,longitude, NA.rm = TRUE) %&gt;%
+  arrange(desc(longitude))
+
+West &lt;- college %&gt;%
+  summarize(organizationName,longitude, NA.rm = TRUE) %&gt;%
+  arrange(longitude)</code></pre>
+<p>While the most Eastern University according strictly to the original
+data set says it’s Tennessee Technological University due to a typo, it
+is actually Colby College.</p>
+<p>The most Western college is University of Hawaii, Manoa, which makes
+the college also the most South-Western college in the data set, what a
+fun fact.</p>
+</div>
 </div>
 
 

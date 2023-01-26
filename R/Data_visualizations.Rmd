@@ -19,14 +19,12 @@ data("CIACountries")
 ### Base R
 
 ```{r}
-plot(CIACountries$gdp, 
-     CIACountries$educ)
+plot(CIACountries$educ ~ CIACountries$gdp)
 ```
 
 Add axis labels
 ```{r}
-plot(CIACountries$gdp, 
-     CIACountries$educ, 
+plot(CIACountries$educ ~ CIACountries$gdp, 
      xlab = "GDP",
      ylab = "Education")
 ```
@@ -47,19 +45,7 @@ plot(CIACountries$gdp,
      xlab = "GDP",
      ylab = "Education",
      pch = 16, 
-     col = "red")
-```
-
-Change the x and y limits 
-```{r}
-plot(CIACountries$gdp, 
-     CIACountries$educ, 
-     xlab = "GDP",
-     ylab = "Education",
-     pch = 16, 
-     col = "red", 
-     xlim = c(0,150000), 
-     ylim = c(0,15))
+     col = "salmon")
 ```
 
 Change the x and y limits 
@@ -140,6 +126,12 @@ ggplot(aes(x = gdp, y = educ), data = CIACountries) +
   geom_point() + 
   xlab("GDP") + 
   ylab("Education")
+
+#CIACountries %>%
+#  ggplot(aes(gdp,educ)) + 
+#  geom_point() + 
+#  xlab("GDP") + 
+#  ylab("Education")
 ```
 
 Change the shape
@@ -153,7 +145,7 @@ ggplot(aes(x = gdp, y = educ), data = CIACountries) +
 Change the color
 ```{r}
 ggplot(aes(x = gdp, y = educ), data = CIACountries) +
-  geom_point(shape = 23, colour = "red") +
+  geom_point(shape = 18, colour = "red") + #Rpch for plot shape numbers
   xlab("GDP") +
   ylab("Education") 
 ```
@@ -244,7 +236,10 @@ plot(dens$x, dens$y, type = "l")
 ggplot(aes(x = math), data = SAT_2010) + geom_density()
 
 #More jagged
-ggplot(aes(x = math), data = SAT_2010) + geom_density(bw = 0.01)
+ggplot(aes(x = math), data = SAT_2010) + geom_density(bw = 10)
+
+#Histogram and Density plot on the same plot !!!
+ggplot(aes(x = math), data = SAT_2010) + geom_histogram(aes(y = after_stat(density))) + geom_density(colour = "red")
 ```
 
 ```{r}

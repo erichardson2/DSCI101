@@ -68,19 +68,19 @@ subset(CIACountries, pop > 1e9, select = c("country", "pop", "gdp"))
 ```{r}
 #Mutate
 #Population Density
-my_CIACountries <- mutate(CIACountries, dens = pop/area)
-my_CIACountries[1,]
+my_CIACountries <- mutate(CIACountries, dens = pop/area) #create population density column by diving population by area
+my_CIACountries[1,] #show only the first row
 
-my_CIACountries <- CIACountries %>% mutate(dens = pop/area)
-my_CIACountries[1,]
+my_CIACountries <- CIACountries %>% mutate(dens = pop/area) #Same code as before but using pipeline
+my_CIACountries[1,] #show first row
 
 #Base R
 library(mdsr)
-my_CIACountries$dens <- CIACountries$pop / CIACountries$area
+my_CIACountries$dens <- CIACountries$pop / CIACountries$area #same results as previous 2 blocks of code
 
 #rename
-my_CIACountries <- CIACountries %>% rename(education = educ)
-my_CIACountries[1,]
+my_CIACountries <- CIACountries %>% rename(education = educ) #renames educ to education
+my_CIACountries[1,] #show first row
 ```
 
 #arrange
@@ -88,29 +88,28 @@ my_CIACountries[1,]
 ```{r}
 #Sorting with arrange
 #Defaults to ascending
-CIACountries_sort <- arrange(CIACountries, gdp)
-CIACountries_sort[1:5,]
+CIACountries_sort <- arrange(CIACountries, gdp) #arrange dataframe by gdp in ascending order
+CIACountries_sort[1:5,] #show the first 5 rows
 
 #Sort descending
-CIACountries_sort <- arrange(CIACountries, desc(gdp))
+CIACountries_sort <- arrange(CIACountries, desc(gdp)) #arrange dataframe by gdp in descending order
 CIACountries_sort[1:5,]
 
-CIACountries_sort <- CIACountries %>% arrange(desc(gdp))
+CIACountries_sort <- CIACountries %>% arrange(desc(gdp)) #same result as before using pipeline
 CIACountries_sort[1:5,]
 
 #Base R with order
 CIACountries_sort <- CIACountries[order(CIACountries$gdp),]
 CIACountries_sort[1:5,]
 
-CIACountries_sort <- CIACountries[order(-CIACountries$gdp),]
+CIACountries_sort <- CIACountries[order(-CIACountries$gdp),] #notice the negative results in descending order
 CIACountries_sort[1:5,]
 ```
 
 #Summarize and Group_by
 ```{r}
 #What is the average area by high vs low education countries?
-my_CIACountries <-
-  CIACountries %>% mutate(high_educ = educ > 4.5) %>% group_by(high_educ) %>% summarize(mn_area = mean(area))
+my_CIACountries <- CIACountries %>% mutate(high_educ = educ > 4.5) %>% group_by(high_educ) %>% summarize(mn_area = mean(area))
 my_CIACountries
 
 #Base R
@@ -122,8 +121,31 @@ tapply(my_CIACountries$area,my_CIACountries$high_educ, mean)
 
 ##In class assignment: What first letter has the largest population? 
 
+```{r}
+my_CIACountries <- 
+  CIACountries %>% 
+  mutate(fletter = substring(country,1,1)) %>% 
+  group_by(fletter) %>% 
+  summarize(popLetter = sum(pop)) %>% 
+  arrange(desc(popLetter))
+
+my_CIACountries[1,]
+```
+
+
 #What proportion of countries produce any oil stratified by net users class? 
 
+```{r}
+#how many countries in a net users class produce oil in proportion to all countries in the net users class
+
+oil_CIACountries <- 
+  CIACountries %>% 
+  mutate(any_oil = (oil_prod > 0) + 0) %>%
+  group_by(net_users) %>% 
+  summarize(oil_prop = mean(any_oil, na.rm = TRUE))
+
+oil_CIACountries
+```
 
 
 

@@ -9,14 +9,14 @@
 x <- c(4, 1, 3, 8, 6, 7, 5, 3, 0, 9)
 x
 #Vector is numeric and of length 10
-str(x)
-length(x)
+str(x) #structure NOT STRING
+length(x) #notice it's not len
 
 #Subsetting a vector
 x[1]
 x[1:5]
 #Don't need to be consecutive
-x[c(1, 4, 7)]
+x[c(1, 4, 7)] #brings out corresponding elements in the vector by index number
 
 #I can add vectors together
 y <- 1:10
@@ -181,7 +181,7 @@ f
 #So matrices are really two dimensional arrays
 
 #By default matrices are populated by columns
-mat <- matrix(c(1:9), ncol = 3)
+mat <- matrix(c(1:9), ncol = 3) ##function dim to find row x column
 mat
 
 #To input by row
@@ -196,7 +196,7 @@ mat[1, ]
 #First column
 mat[, 1]
 #First and third row with the second column removed
-mat[c(1, 3), -2]
+mat[c(1,3), -2]
 
 ##################
 #cbind and rbind
@@ -233,11 +233,14 @@ arr[1, , 1]
 #I Lists are indexed with double brackets "[[]]" or with a "$name"
 
 #Create a list
-l <-
-  list(3, rep(0, 3), matrix(c(1:4), ncol = 2), paste("X", c(1:5), sep = ""))
+l <- list(3, rep(0, 3), matrix(c(1:4), ncol = 2), paste("X", c(1:5), sep = ""))
 l
 
-#Another wany to create this list
+#Each item in a list separated by a comma
+
+#########List + Matrix = Data Frame
+
+#Another wany to create this list 
 #initialize an empty list
 l <- list()
 l[[1]] <- 3
@@ -246,6 +249,10 @@ l[[2]] <- rep(0, 3)
 l$three <- matrix(c(1:4), ncol = 2)
 l$four <- paste("X", c(1:5), sep = "")
 l
+
+l[[4]]
+l$four
+l[["four"]]
 
 #Let's look at the names
 names(l)
